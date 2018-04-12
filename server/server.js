@@ -13,22 +13,6 @@ var io = socketIO(server);
 
 io.on('connection', (socket) => {
     console.log('New user connected');
-    
-    socket.emit('newEmail', {
-        from: 'mike@example.com',
-        txt: 'What are you making?',
-        createdAt: 123
-    });
-
-    socket.emit('newMessage', {
-        from: 'Sandy',
-        text: 'Lunch tomorrow?',
-        createdAt: 3343434
-    });
-
-    socket.on('createEmail', (newEmail) => {
-        console.log('createEmail', newEmail);
-    });
 
     socket.on('disconnect', () => {
         console.log("User was disconnected");
@@ -36,14 +20,16 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (msg) => {
         console.log('createMessage', msg);
+        io.emit('newMessage', {
+            from: msg.from,
+            text: msg.text,
+            createdAt: new Date().getTime()
+        })
     });
 });
 
 app.use(express.static(publicPath));
 
-// app.get('/', (req, res) => {
-//     res.send('Inside link');
-// })
 
 server.listen(port, () => {
     console.log('Server started at port 3000');
