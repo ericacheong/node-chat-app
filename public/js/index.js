@@ -2,11 +2,6 @@
 var socket = io();
 socket.on('connect', function () {
    console.log('Connected to server');
-
-   socket.emit('createMessage', {
-       from: 'from client',
-       text: 'message from interface'
-   })
 });
 
 socket.on('disconnect', function () {
@@ -15,5 +10,26 @@ socket.on('disconnect', function () {
 
 socket.on('newMessage', function (msg) {
     console.log('New message:', msg);
-})
+    var li = jQuery('<li></li>');
+    li.text(`${msg.from}: ${msg.text}`);
 
+    jQuery('#message-list').append(li);
+});
+
+// socket.emit('createMessage', {
+//     from: 'from client',
+//     text: 'message from interface'
+// }, function (data) {
+//     console.log('Got it', data);
+// });
+
+jQuery('#message-form').on('submit', function (e) {
+    e.preventDefault();
+
+    socket.emit('createMessage', {
+        from: 'User',
+        text: jQuery('[name=message]').val()
+    }, function () {
+
+    });
+});
